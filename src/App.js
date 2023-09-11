@@ -1,25 +1,38 @@
-import logo from './logo.svg';
+import { useState, useCallback, memo } from 'react';
 import './App.css';
+import { TodoList } from './component/TodoList';
+import { InputField } from './component/InputField';
+import { useDispatch } from 'react-redux';
+import {addTodo} from './store/todoSlice'
 
-function App() {
+const  AppImpl = () => {
+  const [text, setText] = useState('');
+
+  const dispath = useDispatch();
+  
+  const addTask = useCallback(()=> {
+    dispath(addTodo( {text} ))
+    setText('');
+  }, [dispath, text])
+
+  
+
+  const getText = useCallback((event) => {
+    setText(event.target.value)
+  }, [setText])
+
+
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <InputField
+       text={text}
+       handleInput={getText}
+       handleSubmit={addTask}
+      />
+     <TodoList />
     </div>
   );
 }
 
-export default App;
+export const App = memo(AppImpl);
